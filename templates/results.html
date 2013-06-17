@@ -1,0 +1,82 @@
+{% load templatetags %}
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Profitable Trade Routes</title>
+
+    <link rel="stylesheet" href="/media/jq.css" type="text/css" media="print, projection, screen">
+    <link rel="stylesheet" href="/media/style.css" type="text/css" id="" media="print, projection, screen">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/media/jquery.tablesorter.pager.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function()
+      {
+        var pIndex = 8;
+        $('table thead tr th').each(function(i, e) {
+          if ($(e).text() == 'Profit') {
+            pIndex = i;
+          }
+        });
+        var cIndex = pIndex + 1;
+        $('td:nth-child(' + cIndex + ')').css('background-color', 'LightGray');
+        $("#myTable").tablesorter({
+          sortList: [[pIndex,1]],
+          headers: { pIndex: { 'sorter': 'digit'}, cIndex: { 'sorter': 'digit' }},
+        });
+      }
+      );
+    </script>
+
+    <style type="text/css">
+      table.tablesorter { width: 100% }
+    </style>
+  </head>
+
+
+  <body>
+    <div width="90%" align="center">
+      <table id="myTable" cellspacing="1" class="tablesorter">
+        <thead>
+          <tr>
+            <th class="header">From</th>
+            <th class="header">To</th>
+            <th class="header">To Region</th>
+            <th class="header">Jumps</th>
+            <th class="header">Item Name</th>
+            <th class="header">Vol</th>
+            <th class="header"># Items</th>
+            <th class="header">Buy At</th>
+            <th class="header">Sell At</th>
+            <th class="header">Profit</th>
+            <th class="header">Capital Required</th>
+            <th class="header">Ratio</th>
+            <th class="header">Cargo Space</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for route in routes %}
+          <tr>
+            <td>{{ route.from }}</td>
+            <td>{{ route.to }}</td>
+            <td>{{ route.to_region }}</td>
+            <td>{{ route.jumps }}</td>
+            <td><a href="http://eve-central.com/home/quicklook.html?typeid={{ route.id }}&sethours=12&regionlimit=10000002&regionlimit=10000028&regionlimit=10000064&regionlimit=10000037&regionlimit=10000032&regionlimit=10000042&regionlimit=10000016&regionlimit=10000033&regionlimit=10000042&regionlimit=10000069&regionlimit=10000030" target=_new>
+              {{ route.item }}
+            </a></td>
+            <td>{{ route.vol }}</td>
+            <td>{{ route.item_num }}</td>
+            <td>{{ route.ask|currency }}</td>
+            <td>{{ route.bid|currency }}</td>
+            <td>{{ route.profit|comma }}</td>
+            <td>{{ route.capital|comma }}</td>
+            <td>{{ route.ratio }}</td>
+            <td>{{ route.cargo|percentage }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

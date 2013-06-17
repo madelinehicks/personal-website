@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+cwd=`pwd`
+pid_file=/tmp/fcgi.pid
+port_file=/tmp/fcgi.port
+
+if [[ -f $pid_file ]]; then
+    old_pid=`cat $pid_file`
+else
+    old_pid=`ps ax | grep runfcgi | head -1 | cut -f1 -d ' '`
+fi
+
+if [[ -f $port_file ]]; then
+    last_port=`cat $port_file`
+    port_to_use=$(($last_port + 1))
+else
+    last_port=8080
+    port_to_use=8000
+fi
+
+# Reset so port_to_use doesn't increment forever
+if [[ $port_to_use -gt 8999 ]]; then
+    port_to_use=8000
+fi
+
+sed -i "s/$last_port/$port_to_use/g" /etc/nginx/sites-available/mad_home.conf
+
+if [[ ! -d logs ]]; then
+    `mkdir logs && chmod -R 777 logs`
+fi
+
+python manage.py runfcgi host=127.0.0.1 port=$port_to_use daemonize=true workdir=$cwd errlog=$cwd/logs/cgi.err outlog=$cwd/logs/cgi.out pidfile=$pid_file
+
+echo $port_to_use > $port_file
+
+service nginx reload
+
+sleep 5s
+echo "Killing old processes on $last_port, pid $old_pid"
+kill -SIGUSR1 $old_pid

@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Profitable Trade Routes</title>
+
+    <!--<link rel="stylesheet" href="/media/bootstrap.css" type="text/css">-->
+
+    <link rel="stylesheet" href="/media/jq.css" type="text/css">
+    <link rel="stylesheet" href="/media/style.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/ui-lightness/jquery-ui-1.8.22.custom.css" type="text/css">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/media/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript">
+      function enableButton() {
+        if (document.getElementById('go').classList.contains('disabled')) {
+          $('#go').removeClass('disabled');
+        }
+        $('#go').text('Search');
+        $("#please-wait").hide();
+      }
+
+      function wtf() {
+        $('#go').addClass('disabled');
+        $('#go').text('Searching...');
+        $("#please-wait").show();
+      }
+
+      function loadResults(e) {
+        if (e.classList.contains('disabled')) {
+          return false;
+        }
+        $('#results').html("");
+        $.get('/routes', $('#search').serialize(), function(response) {
+          $('#results').html(response);
+          enableButton();
+        });
+      }
+
+      $(document).ready(function() {
+        var systems = [ "Itamo", "Mitsolen", "Jatate", "Mahtista", "Vaankalen", "Kylmabe", "Ahtulaima", "Geras", "Sirseshin", "Tuuriainas", "Unpas", "Shihuken", "Nomaa", "Ansila", "Hirtamon", "Hykkota", "Outuni", "Ohmahailen", "Eskunen", "Ikuchi", "Urlen", "Maurasi", "Kisogo", "Jita", "Niyabainen", "Perimeter", "New Caldari", "Saisio", "Abagawa", "Jakanerva", "Gekutami", "Hurtoken", "Uoyonen", "Hampinen", "Poinen", "Liekuri", "Obanen", "Josameto", "Otela", "Olo", "Ikami", "Reisen", "Purjola", "Maila", "Akora", "Messoya", "Ishisomo", "Airmia", "Sakkikainen", "Friggi", "Ihakana", "Vahunomi", "Otitoh", "Otomainen", "Vattuolen", "Onuse", "Soshin", "Keikaken", "Ukkalen", "Akkilen", "Silen", "Osmon", "Korsiki", "Inaya", "Nuken", "Uminas", "Airaken", "Oijanen", "Wuos", "Hentogaira", "Kiainti", "Vasala", "Walvalin", "Otanuomi", "Vouskiaho", "Otsela", "Tasti", "Otosela", "Uemon", "Paala", "Fuskunen", "Akkio", "Uchoshi", "Mastakomon", "Eruka", "Ohkunen", "Obe", "Wirashoda", "Osaa", "Dantumi", "Antiainen", "Ossa", "Semiki", "Kiskoken", "Aurohunen", "Veisto", "Sobaseki", "Funtanainen", "Isikemi", "Uosusuokko", "Hageken", "Uemisaisen", "Sotrentaira", "Ouranienen", "Erenta", "Kino", "Raussinen", "Iidoken", "Tsuguwa", "Nourvukaiken", "Sarekuwa", "Ekura", "Tunttaras", "Vellaine", "Arvasaras", "Akonoinen", "Vaajaita", "Autaris", "Jan", "Saatuban", "Isikano", "Mara", "Isanamo", "Pakkonen", "Piekura", "Amsen", "Malkalen", "Korama", "Ylandoki", "Aakari", "Isseras", "Aunenen", "Elonaya", "Litiura", "Nonni", "Passari", "Piak", "Airkio", "Kakakela", "Kamokor", "Todaki", "Ruvas", "Umokka", "Kirras", "Autama", "Tsukuras", "Nani", "Ajanen", "Kuoka", "Liukikka", "Rauntaka", "Aikantoh", "Atai", "Daras", "Otalieto", "Iitanmadan", "Jotenen", "Haajinen", "Oipo", "Isinokka", "Yoma", "Ibura", "Torrinos", "Endatoh", "Aivoli", "Uesuro", "Oishami", "Elanoda", "Ohbochi", "Isie", "Tamo", "Nannaras", "Anin", "Karjataimon", "Tartoken", "Saranen", "Vuorrassi", "Oimmo", "Nalvula", "Otsasai", "Taisy", "Hakonen", "Bei", "Uttindar", "Hagilur", "Anher", "Ragnarg", "Hek", "Hror", "Amo", "Resbroko", "Hadozeko", "Ardar", "Auner", "Evati", "Ofstold", "Todifrauan", "Helgatild", "Arnstur", "Lasleinur", "Arnher", "Brin", "Nakugard", "Traun", "Uriok", "Barkrik", "Inder", "Tvink", "Lanngisi", "Hjoramold", "Dudreda", "Hakisalki", "Arwa", "Krirald", "Arifsdald", "Ansen", "Floseswin", "Uisper", "Aset", "Eytjangard", "Turnur", "Isbrabata", "Vimeini", "Avenod", "Frerstorn", "Ontorn", "Sirekur", "Gebuladi", "Ebolfer", "Eszur", "Hofjaldgund", "Klogori", "Orfrold", "Egmar", "Taff", "Ualkin", "Gukarla", "Aeddin", "Gulfonodi", "Teonusude", "Gelfiven", "Bosena", "Oddelulf", "Atlar", "Heild", "Hrokkur", "Hrober", "Aedald", "Muttokon", "Audesder", "Illamur", "Horaka", "Eldulf", "Orien", "Varigne", "Meildolf", "Istodard", "Gonheim", "Half", "Sakulda", "Hedaleolfarber", "Altbrard", "Fegomenko", "Osvetur", "Mimiror", "Skarkon", "Ennur", "Unertek", "Klingt", "Weld", "Kattegaud", "Kadlina", "Hegfunden", "Aeditide", "Egbinger", "Hulm", "Osoggur", "Abudban", "Trytedald", "Odatrik", "Rens", "Ameinaka", "Alakgur", "Dammalin", "Bosboger", "Olfeim", "Lulm", "Gulmorogod", "Edmalbrurdus", "Kronsur", "Dumkirinur", "Sist", "Obrolber", "Austraka", "Ivar", "Meirakulf", "Frarn", "Illinfrik", "Balginia", "Gyng", "Avesber", "Gerek", "Tongofur", "Gerbold", "Rokofur", "Ebasgerdur", "Ebodold", "Amamake", "Vard", "Siseide", "Lantorn", "Dal", "Auga", "Eystur", "Pator", "Lustrevik", "Isendeldik", "Ammold", "Emolgranlan", "Offugen", "Roniko", "Aralgrund", "Eddar", "Bogelek", "Wiskeber", "Eifer", "Gusandall", "Atgur", "Endrulf", "Ingunn", "Gultratren", "Auren", "Trer", "Egmur", "Javrendei", "Appen", "Klir", "Jorus", "Onga", "Osaumuni", "Magiko", "Oremmulf", "Hurjafren", "Vullat", "Hrondedir", "Sotrenzur", "Hrondmund", "Bundindus", "Otraren", "Hedgiviter", "Katugumur", "Pettinck", "Du Annes", "Balle", "Decon", "Grinacanne", "Metserel", "Sharuveil", "Adreland", "Erme", "Aufay", "Iyen-Oursta", "Faurent", "Ambeke", "Carrou", "Direrie", "Ignoitton", "Ardene", "Boillair", "Ney", "Fasse", "Ala", "Gratesier", "Schoorasana", "Vylade", "Auvergne", "Aunia", "Agrallarier", "Dodixie", "Eglennaert", "Botane", "Pulin", "Foves", "Alles", "Misneden", "Basgerin", "Chelien", "Trosquesere", "Ansone", "Dunraelare", "Nausschie", "Inghenges", "Estene", "Gallareue", "Stayme", "Parchanier", "Fluekele", "Alsottobier", "Jolia", "Augnais", "Deltole", "Colelie", "Barmalie", "Audaerne", "Dodenvale", "Olettiers", "Artisine", "Chainelant", "Sileperer", "Bamiette", "Crielere", "Jel", "Egghelende", "Odette", "Ation", "Stegette", "Ravarin", "Aliette", "Brapelille", "Bawilan", "Atier", "Archee", "Brybier", "Adrallezoen", "Croleur", "Doussivitte", "Unel", "Claysson", "Auberulle", "Adiere", "Stetille", "Alillere", "Abenync", "Pozirblant", "Bourynes", "Aurcel", "Aymaerne", "Rancer", "Miroitem", "Thelan", "Rorsins", "Lamadent", "Otou", "Assiettes", "Goinard", "Raeghoscon", "Allipes", "Lermireve", "Aetree", "Esmes", "Vittenyn", "Mirilene", "Pucherie", "Fricoure", "Caretyn", "Ainaille", "Konola", "Inoue", "Isaziwa", "Eitu", "Horkkisen", "Erila", "Ohvosamon", "Auviken", "Saikanen", "Oijamon", "Kakki", "Jeras", "Kausaaja", "Oiniken", "Kaimon", "Ahynada", "Aikoro", "Alikara", "Usi", "Ishomilken", "Nikkishina", "Hasama", "Uuna", "Manjonakko", "Kassigainen", "Yashunen", "Tennen", "Hatakani", "Sivala", "Iivinen", "Kubinen", "Uedama", "Enderailen", "Tunudan", "Kulelen", "Rairomon", "Hogimo", "Huttaken", "Paara", "Annaro", "Isutaka", "Tasabeshi", "Ono", "Muvolailen", "Halaima", "Kamio", "Sankkasen", "Tintoh", "Santola", "Ikao", "Waira", "Inaro", "Kaaputenen", "Waskisen", "Sirppala", "Irjunen", "Inari", "Yria", "Oshaima", "Hysera", "Kaunokka", "Venilen", "Oisio", "Haatomo", "Suroken", "Kusomonmon", "Juunigaishi", "Isikesu", "Anttiri", "Hasmijaala", "Nagamanen", "Oto", "Sujarento", "Eranakko", "Onatoh", "Tannolen", "Tama", "Uotila", "Isenairos", "Saila", "Aramachi", "Oichiya", "Motsu", "Arnatele", "Halle", "Mormoen", "Amattens", "Jurlesel", "Bereye", "Aice", "Junsoraert", "Harerget", "Azer", "Cherore", "Torvi", "Mosson", "Mya", "Gerper", "Marosier", "Lirsautton", "Blameston", "Vaurent", "Aclan", "Jaschercis", "Ardallabier", "Athinard", "Meves", "Ethernity", "Mattere", "Gicodel", "Frarolle", "Quier", "Atlanins", "Leremblompes", "Bille", "Colcer", "Alachene", "Uphene", "Elarel", "Enedore", "Angymonne", "Averon", "Carirgnottin", "Laic", "Odixie", "Antollare", "Tolle", "Avele", "Scuelazyns", "Aydoteaux", "Muer", "Groothese", "Olide", "Adeel", "Mannar", "Mormelot", "Angatalie", "Arlulf", "Brundakur", "Stirht", "Illuin", "Nedegulf", "Aldilur", "Alf", "Eust", "Flost", "Todrir", "Asgeir", "Evuldgenzo", "Ongund", "Jondik", "Olbra", "Altrinur", "Vilur", "Reset", "Eygfe", "Eiluvodi", "Freatlidur", "Roleinn", "Maturat", "Bongveber", "Anbald", "Vorsk", "Hjortur", "Egbonbet", "Totkubad", "Meimungen", "Agtver", "Datulen", "Situner", "Tamekamur", "Evettullur", "Leurtmar", "Ryddinjorn", "Arlek", "Elgoi", "Eram", "Yrmori", "Aldagolf", "Aldrat", "Urnhard", "Hardbako", "Erstur", "Fredagod", "Libold", "Wirdalen", "Nein", "Enden", "Erstet", "Anstard", "Osvestmunnur", "Hilfhurmur", "Geffur", "Oppold", "Tratokard", "Lumegen", "Gedugaud", "Polstodur", "Hebisa", "Tollus", "Ogoten", "Earled", "Aderkan", "Ansher", "Earwik", "Finanar", "Moselgi", "Mateber", "Iluin", "Ofage", "Josekorn", "Nifflung", "Hakeri", "Oraekja", "Dantbeinn", "Irgrus", "Orduin", "Engosi", "Atonder", "Hotrardik", "Ridoner", "Klaevik", "Lirerim", "Offikatlin", "Diromitur", "Eldjaerin", "Erlendur", "Aldik", "Tabbetzur", "Eurgrana", "Frulegur", "Hroduko", "Hodrold", "Odebeinn", "Konora", "Erindur", "Luminaire", "Mies", "Oursulaert", "Renyn", "Duripant", "Algogille", "Caslemon", "Jolevier", "Mesybier", "Charmerout", "Yvangier", "Pemene", "Heydieles", "Fliet", "Actee", "Indregulle", "Amane", "Abune", "Deven", "Estaunitte", "Deninard", "Hulmate", "Annages", "Onne", "Vitrauze", "Palmon", "Villore", "Arant", "Allamotte", "Obalyu", "Vifrevaert", "Parts", "Ladistier", "Old Man Star", "Arnon", "Laurvier", "Adirain", "Attyn", "Ignebaener", "Aere", "Lisbaetanne", "Aeschee", "Allebin", "Atlulle", "Droselory", "Haine", "Perckhevin", "Isenan", "Synchelle", "Wysalan", "Yona", "Noghere", "Aporulie", "Seyllin", "Adrel", "Ane", "Clorteler", "Atlangeins", "Derririntel", "Cat", "Ommare", "Andole", "Vale", "Sakenta", "Jouvulen", "Akiainavas", "Malukker", "Hadaugago", "Odotte", "Abrat", "Couster", "Senda", "Kappas", "Aokannitoh", "Orgron", "Krilmokenur", "Oirtlair", "Embod", "Hecarrin", "Uitra", "Komo", "Hitanishio", "Todeko", "Larkugei", "Olelon", "Erego", "Henebene", "Urhinichi", "Laah", "Ichinumi", "Usteli", "Loguttur", "Trossere", "Fildar", "Mesokel", "Black Rise", "The Citadel", "Lonetrek", "The Forge", "Heimatar", "Molden Heath", "Metropolis", "Essence", "Everyshore", "Sinq Laison" ];
+        var regions = [ "Black Rise", "The Citadel", "Lonetrek", "The Forge", "Heimatar", "Molden Heath", "Metropolis", "Essence", "Everyshore", "Sinq Laison" ];
+
+        $('#autocomplete-start').autocomplete({ minLength: 3, autoFocus: true, source: systems }).focus();
+        $('#autocomplete-end').autocomplete({ minLength: 3, autoFocus: true, source: systems });
+      });
+    </script>
+
+    <style type="text/css">
+      table.tablesorter { width: 1200px }
+      input { text-align: right; }
+      form { margin-bottom: 0px }
+      label.control-label { display: inline; line-height: 34px; vertical-align: top; }
+    </style>
+  </head>
+
+  <body style="padding: 10px">
+    <div align="center" style="width: 800px; margin-left: auto; margin-right: auto;">
+      <form class="" id="search">
+        <div style="width: 500px; text-align: left">OPTIONAL:</div>
+        <div style="width: 500px;border: 1px solid LightGray;padding: 5px; margin: 5px">
+          <label class="control-label" style="display: inline; float: left; line-height: 34px;">Starting from </label>
+          <div class="controls" style="display: inline-block; margin-left: 3px;">
+            <input type="text" name="start" id="autocomplete-start" style="display: block;float: left;"
+            class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+            <label style="font-size: 8pt; display:block; text-align: left;">
+            (system or region)</label>
+          </div>
+          <label class="control-label" style="display: inline; line-height: 34px;"> and going to </label>
+          <div class="controls" style="display: inline-block; margin-left: 3px;">
+            <input type="text" name="end" id="autocomplete-end" style="display: block;float: left;"
+            class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+            <label style="font-size: 8pt; display:block; text-align: left;">
+            (system or region)</label>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">I'm willing to spend/risk </label>
+          <div class="controls" style="display: inline">
+            <div class="input-append" style="display: inline">
+              <input class="span2" name="capital" size="6" type="text" align="right" value="500"><span class="add-on"> million ISK</span>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">My cargohold capacity is </label>
+          <div class="controls" style="display: inline">
+            <div class="input-append" style="display: inline">
+              <input class="span2" name="cargo" size="10" type="text" value="8912" align="right"><span class="add-on">m3</span>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">My tax rate is </label>
+          <div class="controls" style="display: inline">
+            <div class="input-append" style="display: inline">
+              <input class="span2" name="tax" size="10" type="text" value="0.9" align="right"><span class="add-on">%</span>
+            </div>
+          </div>
+        </div>
+        <button id="go" class="btn btn-primary" onclick="loadResults(this); wtf(); return false;">Search</button>
+      </form>
+
+      <div style="display:none" id="please-wait">Now searching all regions for best trade routes...<br/>
+      Please be patient. This normally takes ~60 seconds.</div>
+    </div>
+    <div width="90%" align="center" id="results">
+
+    </div>
+  </body>
+</html>

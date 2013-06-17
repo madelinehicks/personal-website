@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block blog %}
+
+<style type="text/css">
+    div.post { padding-bottom: 10px }
+		div.post-content p { padding: 0px 10px 5px 10px; }
+		div.quote { padding: 0px 20px 5px 20px; }
+</style>
+
+<div class="tab-pane active" id="blog">
+<div class="row">
+	<div class="span9">
+
+	{% for post in posts %}
+		<div class="post">
+			<p class="post-title"><h3>{{ post.title }}</h3></p>
+			<p class="post-date"><h5>{{ post.updated_on|date:"F j, Y" }}</h5></p>
+			<div class="post-content">{{ post.content|safe }}</div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="span3">
+		<div class="row">
+			<ul class="nav nav-tabs nav-stacked">
+				{% for post in posts %}
+				<li><a href="#">{{ post.title }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}
+
+{% block projects %}
+
+<div class="tab-pane" id="projects">
+    <div class="accordion" id="accordion-projects">
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-projects" data-target="#collapseOne" href="#collapseOne">
+            This Website
+          </a>
+        </div>
+        <div id="collapseOne" class="accordion-body collapse in">
+          <div class="accordion-inner">
+            This site will eventually become a collection of code samples and rants on life, the universe, and everything. I also plan to add a file-sharing dropbox for clients and friends.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-projects" data-target="#collapseTwo" href="#collapseTwo">
+            Python ORM based on the Database's Schema
+          </a>
+        </div>
+        <div id="collapseTwo" class="accordion-body collapse">
+          <div class="accordion-inner">
+            Because I believe in building projects from the database on up, and because I hate typing unnecessarily, I'd like to design an ORM that generates code for models based on the database schema itself. MySQL and SQLite will initially be supported.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-projects" data-target="#collapseThree" href="#collapseThree">
+            Social Graph Mapper
+          </a>
+        </div>
+        <div id="collapseThree" class="accordion-body collapse">
+          <div class="accordion-inner">
+            Illustrates connections between individuals in a given social network. Graphically represents loci of influence and super-connectors. Like <a href="http://www.nndb.com/" target="_new">NNDB</a>, but extensible for any social network, and not in Flash.
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
